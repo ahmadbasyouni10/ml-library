@@ -23,4 +23,27 @@ fn main() {
     }
 
     let m5 = m2.map(|x| x.sin());
+    println!("m2 with sin applied {:?}", m5);
+
+    let a = Matrix::from_vec(2, 3, vec![1.0, 2.0, 3.0,
+                                                                4.0, 5.0, 6.0]);
+
+    let b = Matrix::from_vec(3, 2, vec![1.0, 2.0, 3.0,
+                                                                4.0, 5.0, 6.0]);
+    
+    let c = a.dot(&b);
+    match c {
+        Ok(result) => {
+            println!("Multiplication result {:?}", result);
+            println!("Result Tranposed {:?}", result.transpose());
+        }
+        Err(e) => println!("Error: {}", e),
+    }
+
+    let c2 = a.subtract(&b);
+    println!("subtraction of a and b for loss predicted - target {:?}", c2);
+
+    let c3 = a.hadamard(&b);
+    println!("hadamard subtraction for backprop, activation times matrix {:?}", c3);
+
 }

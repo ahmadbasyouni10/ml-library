@@ -66,4 +66,58 @@ impl Matrix {
         let data: Vec<f32> = self.data.iter().map(|&x| func(x)).collect();
         Matrix { rows: self.rows, cols: self.cols, data }
     }
+
+    pub fn transpose(&self) -> Matrix {
+        let mut new_data = vec![0.0; self.rows * self.cols];
+        for r in 0..self.rows {
+            for c in 0..self.cols {
+                new_data[c * self.rows + r] = self.get(r, c);
+            }
+        }
+        Matrix { rows: self.cols, cols: self.rows, data: new_data }
+    }
+
+    pub fn dot(&self, other: &Matrix) -> Result<Matrix, String> {
+        if self.cols != other.rows {
+            return Err(format!("Inner Dimensions of dot product not same. {}x{}, X {}x{}",
+            self.rows, self.cols, other.rows, other.cols));
+        };
+
+        let mut result = Matrix::zeros(self.rows, other.cols);
+
+        for i in 0..self.rows {
+            for j in 0..other.cols {
+                let mut sum = 0.0;
+                for k in 0..self.cols {
+                    sum += self.get(i, k) * other.get(k, j);
+                }
+                result.set(i, j, sum)
+            }
+        }
+        Ok(result)
+    }
+    
+    pub fn subtract(&self, other: &Matrix) -> Result<Matrix, String> {
+        if self.rows != other.rows || self.cols != self.cols {
+            return Err("Dimensions dont match for subtraction".to_string());
+
+        }
+        let data = self.data.iter().zip(other.data.iter())
+            .map(|(a, b)| a - b)
+            .collect();
+
+        Ok(Matrix {rows: self.rows, cols: self.cols, data})
+    }
+
+    pub fn hadamard(&self, other: &Matrix) -> Result<Matrix, String> {
+        if self.rows != other.rows || self.cols != self.cols {
+            return Err("Dimensions dont match for subtraction".to_string());
+
+        }
+        let data = self.data.iter().zip(other.data.iter())
+            .map(|(a, b)| a * b)
+            .collect();
+
+        Ok(Matrix {rows: self.rows, cols: self.cols, data})
+    }
 }
